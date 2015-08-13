@@ -1,167 +1,3 @@
-var RecipeRow = React.createClass({
-	handleChange: function() {
-		this.props.onRecipeChecked(
-			this.refs.recipeCheckBox.getDOMNode().checked, this.props.recipe.name
-		);
-	},
-    render: function() {
-        return (
-            <tr>
-                <td>{this.props.recipe.name}</td>
-                <td><input type="checkbox" ref="recipeCheckBox" onChange={this.handleChange} /></td>
-            </tr>
-        );
-    }
-});
-
-
-
-var SearchBar = React.createClass({
-	handleChange: function() {
-        this.props.onUserInput(
-            this.refs.filterTextInput.getDOMNode().value
-        );
-    },
-    render: function() {
-        return (
-            <form>
-                <input type="text" placeholder="Ingredients Search..." value={this.props.filterText} ref="filterTextInput" onChange={this.handleChange} />
-            </form>
-        );
-    }
-});
-
-var Ingredient = React.createClass({
-	render: function() {
-		return(
-			<li>{this.props.ingredient}</li>
-		);
-	}
-});
-
-var IngredientsList = React.createClass({
-	render: function() {
-		var list = [];
-
-		this.props.ingredients.forEach(function(ingredient) {
-			list.push(<Ingredient ingredient={ingredient} />);
-		});
-		return (
-			<ul>
-				{list}
-			</ul>
-		);
-	}
-});
-
-var RecipeTable = React.createClass({
-
-	addRemoveRecipe: function(checked, recipe) {
-		this.props.updateSelectedRecipes(checked, recipe);
-	},
-
-    render: function() {
-        var rows = [];
-        
-        this.props.recipes.forEach(function(recipe) {        	
-        	if(recipe.ingredients.indexOf(this.props.filterText) === -1) {
-        		return;
-        	} else {
-        		rows.push(<RecipeRow recipe={recipe} onRecipeChecked={this.addRemoveRecipe} />);	
-        	}
-        }.bind(this));
-        return (
-            <table className="recipeTable table">
-                <tbody>{rows}</tbody>
-            </table>
-        );
-    }
-});
-
-var FilterableRecipeTable = React.createClass({
-	getInitialState: function() {
-		return {
-			filterText: '',
-			selectedRecipes: [],
-			ingredients: ["Rice", "Chicken Stock", "Parmesan Cheese", "White Wine", "Butter", "Salt", "Pepper", "Peas"]
-		};
-	},
-
-	handleUserInput: function(filter, checkbox) {
-		this.setState({
-			filterText: filter
-		});
-	},
-
-	updateSelectedRecipes: function(checked, recipe) {
-		Array.prototype.removeRecipe = function(recipe) {
-			var index = this.indexOf(recipe);
-			if(index > 0) {
-				this.splice(index, 1);
-			}
-		}
-
-		if(checked) {
-				this.state.selectedRecipes.push(recipe);
-		} else {
-			this.state.selectedRecipes.removeRecipe(recipe);
-		}
-		console.log('selected recipes: ' + this.state.selectedRecipes);
-		this.updateIngredients(this.state.selectedRecipes);
-
-	},
-
-	updateIngredients: function(arr) {
-		console.log('arr: ', arr);
-		this.setState({ingredients: null});
-		Array.prototype.unique = function() {
-		    var a = this.concat();
-		    for (var i = 0; i < a.length; ++i) {
-		        for (var j = i+1; j < a.length; ++j) {
-		            if (a[i] === a[j]) {
-	            		a.splice(j--, 1);
-		            }
-		        }
-		    }
-		    return a;
-		};
-
-		this.props.recipes.forEach(function(recipe) {
-
-			if(arr.indexOf(recipe.name) >= 0) {
-				console.log('in the list', arr, recipe);
-		
-				this.setState({
-					ingredients: this.state.ingredients.concat(recipe.ingredients).unique()
-				});
-			} else {
-				console.log(arr.indexOf(recipe.name));
-			}
-		}.bind(this));
-
-		console.log('this is state.ingredients: ' + this.state.ingredients);
-		
-		
-		
-	},
-
-    render: function() {
-        return (
-            <div className="app clearfix">
-            	<h1>Cook Me Something to Eat!</h1>
-            	<div className="main-content clearfix">
-	                <div className="left table-container">
-	                	<SearchBar filterText={this.state.filterText} onUserInput={this.handleUserInput} />
-	                	<RecipeTable filterText={this.state.filterText} recipes={this.props.recipes} updateSelectedRecipes={this.updateSelectedRecipes} />
-	            	</div>
-	                <div className="left table-container ingredients-list"><IngredientsList ingredients={this.state.ingredients}/></div>
-                </div>
-            </div>
-        );
-    }
-});
-
-
 var PRODUCTS = [
     {
         "name": "Risotto",
@@ -212,5 +48,160 @@ var PRODUCTS = [
         "ingredients": ["Onion", "Oil", "Rice", "Egg", "Soy Sauce", "Sesame Oil", "Chicken", "Carrot", "Peas"]
     }
 ];
+
+Array.prototype.unique = function() {
+    var a = this.concat();
+    for (var i = 0; i < a.length; ++i) {
+        for (var j = i+1; j < a.length; ++j) {
+            if (a[i] === a[j]) {
+                a.splice(j--, 1);
+            }
+        }
+    }
+    return a;
+};
+
+Array.prototype.removeRecipe = function(recipe) {
+    var index = this.indexOf(recipe);
+    if(index >= 0) {
+        this.splice(index, 1);
+    }
+}
+
+var RecipeRow = React.createClass({
+	handleChange: function() {
+		this.props.onRecipeChecked(
+			this.refs.recipeCheckBox.getDOMNode().checked, this.props.recipe.name
+		);
+	},
+    render: function() {
+        return (
+            <tr>
+                <td>{this.props.recipe.name}</td>
+                <td><input type="checkbox" ref="recipeCheckBox" onChange={this.handleChange} /></td>
+            </tr>
+        );
+    }
+});
+
+var SearchBar = React.createClass({
+	
+    handleChange: function() {
+        this.props.onUserInput(
+            this.refs.filterTextInput.getDOMNode().value
+        );
+    },
+    render: function() {
+        return (
+            <form>
+                <input type="text" placeholder="Ingredients Search..." value={this.props.filterText} ref="filterTextInput" onChange={this.handleChange} />
+            </form>
+        );
+    }
+});
+
+var Ingredient = React.createClass({
+	
+    render: function() {
+		return(
+			<li>{this.props.ingredient}</li>
+		);
+	}
+});
+
+var IngredientsList = React.createClass({
+	
+    render: function() {
+		var list = [];
+		this.props.ingredients.forEach(function(ingredient, index) {
+			list.push(<Ingredient key={index} ingredient={ingredient} />);
+		});
+
+		return (
+			<ul>
+				{list}
+			</ul>
+		);
+	}
+});
+
+var RecipeTable = React.createClass({
+    
+    addRemoveRecipe: function(checked, recipe) {
+        if(checked) {
+            this.props.selectedRecipes.push(recipe);
+        } else {
+            this.props.selectedRecipes.removeRecipe(recipe);
+        }
+
+		this.props.updateIngredients(this.props.selectedRecipes);
+	},
+
+    render: function() {
+        var rows = [];
+        
+        this.props.recipes.forEach(function(recipe) {        	
+        	if(recipe.ingredients.indexOf(this.props.filterText) >= 0) {
+                
+                rows.push(<RecipeRow key={recipe.name} recipe={recipe} onRecipeChecked={this.addRemoveRecipe} />);  
+        	} else {
+        		return;
+        	}
+        }.bind(this));
+
+        return (
+            <table className="recipeTable table">
+                <tbody>{rows}</tbody>
+            </table>
+        );
+    }
+});
+
+var FilterableRecipeTable = React.createClass({
+	
+    getInitialState: function() {
+		return {
+			filterText: '',
+			ingredients: ['Select an ingredient!'],
+            selectedRecipes: []
+		};
+	},
+
+	onUserInput: function(filter) {
+		this.setState({
+			filterText: filter,
+            ingredients: [],
+            selectedRecipes: []
+		});
+	},
+
+	updateIngredients: function(arr) {
+        var currentIngredients = [];
+        this.props.recipes.forEach(function(recipe) {
+			if(arr.indexOf(recipe.name) >= 0) {
+                currentIngredients = currentIngredients.concat(recipe.ingredients).unique().sort();
+			} 
+		}.bind(this));
+
+        this.setState({
+            ingredients: currentIngredients
+        });
+	},
+
+    render: function() {
+        return (
+            <div className="app clearfix">
+            	<h1>Cook Me Something to Eat!</h1>
+            	<div className="main-content clearfix">
+	                <div className="left table-container">
+	                	<SearchBar filterText={this.state.filterText} onUserInput={this.onUserInput} />
+	                	<RecipeTable selectedRecipes={this.state.selectedRecipes} filterText={this.state.filterText} recipes={this.props.recipes} updateIngredients={this.updateIngredients} />
+	            	</div>
+	                <div className="left table-container ingredients-list"><IngredientsList ingredients={this.state.ingredients}/></div>
+                </div>
+            </div>
+        );
+    }
+});
  
 React.render(<FilterableRecipeTable recipes={PRODUCTS} />, document.body);
