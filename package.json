@@ -1,0 +1,23 @@
+{
+  "name": "datascience",
+  "version": "1.0.0",
+  "description": "DataScience's Frontend Code Test ================== ## Info Code Test was done with React.js",
+  "main": "app.js",
+  "dependencies": {
+    "http-server": "^0.8.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dwerdo/datascience.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dwerdo/datascience/issues"
+  },
+  "homepage": "https://github.com/dwerdo/datascience#readme"
+}
