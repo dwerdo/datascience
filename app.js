@@ -67,9 +67,12 @@ var IngredientsList = React.createClass({
 		});
 
 		return (
-			<ul>
-				{list}
-			</ul>
+            <div>
+                <b>Ingredients List:</b>
+    			<ul>
+    				{list}
+    			</ul>
+            </div>
 		);
 	}
 });
@@ -91,7 +94,6 @@ var RecipeTable = React.createClass({
         
         this.props.recipes.forEach(function(recipe) {        	
         	if(recipe.ingredients.indexOf(this.props.filterText) >= 0) {
-                
                 rows.push(<RecipeRow key={recipe.name} recipe={recipe} onRecipeChecked={this.addRemoveRecipe} />);  
         	} else {
         		return;
