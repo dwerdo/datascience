@@ -155,7 +155,7 @@ var FilterableRecipeTable = React.createClass({
     render: function() {
         return (
             <div className="app clearfix">
-            	<h1>Cook Me Something to Eat!</h1>
+            	<h1>Cook Me Something to Eat! <img className="hamburger" src="./hamburger.png"/></h1>
             	<div className="main-content clearfix">
 	                <div className="left table-container">
 	                	<SearchBar filterText={this.state.filterText} onUserInput={this.onUserInput} />
