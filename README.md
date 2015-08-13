@@ -14,13 +14,17 @@ NPM
 
 ## Installation 
 If you have bower installed you can  run:
+```
 bower install
-
+```
 Install a simple http server:
+```
 npm install http-server -g
-
+```
 run:
-http-server
 
+```
+http-server
+```
 ## Notes
 Hope you don't mind that I added to Array.prototype
