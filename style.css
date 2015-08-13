@@ -1,0 +1,28 @@
+.app {
+	margin: 100px auto;
+	width: 50%;
+}
+
+.left {
+	float: left;
+}
+
+.recipeTable {
+	margin-top: 10px;
+}
+
+.table-container {
+	padding: 15px;
+	border-color: #ddd;
+    border-width: 1px;
+    border-radius: 4px 4px 0 0;
+    border-style: solid;
+}
+
+.main-content {
+	padding: 5px;
+}
+
+.ingredients-list {
+	margin: 0 0 0 10px;
+}
