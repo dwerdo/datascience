@@ -1,54 +1,3 @@
-var PRODUCTS = [
-    {
-        "name": "Risotto",
-        "type": "Italian",
-        "cook_time": 60,
-        "ingredients": ["Rice", "Chicken Stock", "Parmesan Cheese", "White Wine", "Butter", "Salt", "Pepper", "Peas"]
-    },
-    {
-        "name": "Enchiladas",
-        "type": "Mexican",
-        "cook_time": 50,
-        "ingredients": ["Tomato Sauce", "Tomato", "Corn Tortillas", "Cheddar Cheese", "Onion", "Olives", "Salt", "Chicken"]
-    },
-    {
-        "name": "Hummus",
-        "type": "Middle Eastern",
-        "cook_time": 10,
-        "ingredients": ["Garlic", "Chickpeas", "Salt", "Tahini", "Hot Sauce"]
-    },
-    {
-        "name": "Pancakes",
-        "type": "Breakfast",
-        "cook_time": 25,
-        "ingredients": ["Milk", "Flour", "Sugar", "Butter", "Baking Powder", "Baking Soda", "Egg", "Salt"]
-    },
-    {
-        "name": "Borscht",
-        "type": "Russian",
-        "cook_time": 75,
-        "ingredients": ["Water", "Potato", "Beets", "Butter", "Onion", "Salt", "Celery", "Carrot", "Cabbage", "Pepper", "Vinegar", "Tomato"]
-    },
-    {
-        "name": "Pierogi",
-        "type": "Polish",
-        "cook_time": 105,
-        "ingredients": ["Butter", "Onion", "Salt", "Pepper", "Potato", "Egg", "Flour", "Baking Powder"]
-    },
-    {
-        "name": "Pupusa",
-        "type": "Salvadoran",
-        "cook_time": 40,
-        "ingredients": ["Masa", "Water", "Queso Fresco"]
-    },
-    {
-        "name": "Fried Rice",
-        "type": "Chinese",
-        "cook_time": 28,
-        "ingredients": ["Onion", "Oil", "Rice", "Egg", "Soy Sauce", "Sesame Oil", "Chicken", "Carrot", "Peas"]
-    }
-];
-
 Array.prototype.unique = function() {
     var a = this.concat();
     for (var i = 0; i < a.length; ++i) {
@@ -163,9 +112,20 @@ var FilterableRecipeTable = React.createClass({
 		return {
 			filterText: '',
 			ingredients: ['Select an ingredient!'],
-            selectedRecipes: []
+            selectedRecipes: [],
+            recipes: []
 		};
 	},
+
+    componentDidMount: function() {
+        $.get(this.props.source, function(result) {
+            if (this.isMounted()) {
+                this.setState({
+                    recipes: result
+                });
+            }
+        }.bind(this));
+    },
 
 	onUserInput: function(filter) {
 		this.setState({
@@ -176,12 +136,14 @@ var FilterableRecipeTable = React.createClass({
 	},
 
 	updateIngredients: function(arr) {
-        var currentIngredients = [];
-        this.props.recipes.forEach(function(recipe) {
-			if(arr.indexOf(recipe.name) >= 0) {
-                currentIngredients = currentIngredients.concat(recipe.ingredients).unique().sort();
-			} 
-		}.bind(this));
+
+        var currentRecipes = this.state.recipes.filter(function(recipe) {
+            return arr.indexOf(recipe.name) >= 0;
+        });
+
+        var currentIngredients = currentRecipes.reduce(function(coll, recipe) {
+            return coll.concat(recipe.ingredients);
+        }, []).unique().sort();
 
         this.setState({
             ingredients: currentIngredients
@@ -195,7 +157,7 @@ var FilterableRecipeTable = React.createClass({
             	<div className="main-content clearfix">
 	                <div className="left table-container">
 	                	<SearchBar filterText={this.state.filterText} onUserInput={this.onUserInput} />
-	                	<RecipeTable selectedRecipes={this.state.selectedRecipes} filterText={this.state.filterText} recipes={this.props.recipes} updateIngredients={this.updateIngredients} />
+	                	<RecipeTable selectedRecipes={this.state.selectedRecipes} filterText={this.state.filterText} recipes={this.state.recipes} updateIngredients={this.updateIngredients} />
 	            	</div>
 	                <div className="left table-container ingredients-list"><IngredientsList ingredients={this.state.ingredients}/></div>
                 </div>
@@ -204,4 +166,4 @@ var FilterableRecipeTable = React.createClass({
     }
 });
  
-React.render(<FilterableRecipeTable recipes={PRODUCTS} />, document.body);
+React.render(<FilterableRecipeTable source='./recipes.json' />, document.body);
