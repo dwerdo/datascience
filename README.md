@@ -12,16 +12,18 @@ Bower
 NPM
 - http-server
 
-## Installation 
-If you have bower installed you can  run:
+## Instructions
+
+- Clone this repo
+- If you have bower installed you can  run:
 ```
 bower install
 ```
-Install a simple http server:
+- Install a simple http server:
 ```
 npm install http-server -g
 ```
-run:
+- run:
 
 ```
 http-server
